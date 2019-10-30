@@ -5,10 +5,18 @@
 //储存某一天的历史流量
 struct HistoryTraffic
 {
-	int year;
-	int month;
-	int day;
-	unsigned int kBytes;	//当天使用的流量（以KB为单位）
+	int year{};
+	int month{};
+	int day{};
+	//unsigned int kBytes;	//当天使用的流量（以KB为单位）
+	unsigned int up_kBytes{};
+	unsigned int down_kBytes{};
+	bool mixed{ true };		//如果不区分上传和下载流量，则为true
+
+	unsigned int kBytes() const
+	{
+		return up_kBytes + down_kBytes;
+	}
 
 	//比较两个HistoryTraffic对象的日期，如果a的时间大于b，则返回true
 	static bool DateGreater(const HistoryTraffic& a, const HistoryTraffic& b)
@@ -147,6 +155,7 @@ struct PublicSettingData
 	bool hide_unit;			//隐藏单位
 	bool hide_percent;		//隐藏百分号
 	DoubleClickAction double_click_action;		//鼠标双击动作
+	wstring double_click_exe;	//鼠标双击动作为4时，打开的程序路径，默认任务管理器
 };
 
 #define MAIN_WND_COLOR_NUM 4		//主窗口颜色数量
@@ -162,6 +171,7 @@ struct MainWndSettingData : public PublicSettingData
 struct TaskBarSettingData : public PublicSettingData
 {
 	COLORREF  back_color{ RGB(0, 0, 0) };	//背景颜色
+	COLORREF transparent_color{ RGB(0, 0, 0) };		//透明色
 	COLORREF text_colors[TASKBAR_COLOR_NUM]{};		//文字颜色（依次为“上传”、“下载”、“CPU”、“内存”的标签和数据颜色）
 	bool value_right_align{ false };	//数值是否右对齐
 	int digits_number{ 4 };				//数据位数
@@ -186,6 +196,8 @@ struct GeneralSettingData
 	Language language;
 
 	bool show_all_interface{ true };
+
+	bool portable_mode{ false };		//便携模式，如果为true，则程序所有数据都保存到exe所在目录下，否则保存到Appdata\Romaing目录下
 };
 
 enum class Alignment

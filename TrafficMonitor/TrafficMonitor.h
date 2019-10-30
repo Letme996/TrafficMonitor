@@ -24,6 +24,7 @@ class CTrafficMonitorApp : public CWinApp
 public:
 	//各种路径
 	wstring m_module_dir;		//程序exe文件的目录
+	wstring m_appdata_dir;
 	wstring m_module_path;		//程序exe文件的路径
 	wstring m_module_path_reg;	//用于作为写入注册表开机自项的exe文件的路径（如果路径中有空格，加上引号）
 	wstring m_config_path;
@@ -41,9 +42,11 @@ public:
 	int m_used_memory{};	//可用物理内存（单位为KB）
 	int m_total_memory{};	//物理内存总量（单位为KB）
 
-	__int64 m_today_traffic{};	//今天已使用的流量
+	__int64 m_today_up_traffic{};	//今天已使用的上传流量
+	__int64 m_today_down_traffic{};	//今天已使用的下载流量
 
 	bool m_cannot_save_config_warning{ true };	//指示是否会在无法保存设置时弹出提示框
+	bool m_cannot_save_global_config_warning{ true };	//指示是否会在无法保存设置时弹出提示框
 
 	//选项设置数据
 	MainWndSettingData m_main_wnd_data;
@@ -53,6 +56,7 @@ public:
 	MainConfigData m_cfg_data;
 	int m_notify_interval;		//弹出通知消息的时间间隔
 	bool m_debug_log;
+	bool m_taksbar_transparent_color_enable;
 
 	//bool m_is_windows10_fall_creator;
 	CWinVersionHelper m_win_version;		//当前Windows的版本
@@ -65,6 +69,9 @@ public:
 	void LoadConfig();
 	void SaveConfig();
 
+	void LoadGlobalConfig();
+	void SaveGlobalConfig();
+
 	int DPI(int pixel);
 	void DPI(CRect& rect);
 	void GetDPI(CWnd* pWnd);
@@ -75,6 +82,9 @@ public:
 
 	void SetAutoRun(bool auto_run);
 	bool GetAutoRun();
+
+	//获取系统信息文本
+	CString GetSystemInfoString();
 
 private:
 	//int m_no_multistart_warning_time{};		//用于设置在开机后多长时间内不弹出“已经有一个程序正在运行”的警告提示
